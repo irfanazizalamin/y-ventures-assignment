@@ -1,52 +1,42 @@
 <script setup lang="ts">
-import TodoInput from '@/components/TodoInput.vue'
-import TodoItem from '@/components/TodoItem.vue'
-import FilterTabs from '@/components/FilterTabs.vue'
+import TodoInput from "@/components/TodoInput.vue";
+import TodoItem from "@/components/TodoItem.vue";
+import FilterTabs from "@/components/FilterTabs.vue";
+import { useTodo } from "@/composables/useTodo";
 
-import type { Todo, Filter } from '@/types/todo'
+const {
+  filteredTodos,
+  addTodo,
+  toggleTodo,
+  removeTodo,
+  filter,
+  fetchTodos,
+  loading,
+  error,
+} = useTodo();
 
-const todos = ref<Todo[]>([
-  { id: '1', title: 'Learn Nuxt 3', completed: true },
-  { id: '2', title: 'Build a To-Do App', completed: false },
-  { id: '3', title: 'Push to GitHub', completed: false }
-])
-
-const filter = ref<Filter>('all')
-
-const filteredTodos = computed(() => {
-  if (filter.value === 'completed') return todos.value.filter(t => t.completed)
-  if (filter.value === 'pending') return todos.value.filter(t => !t.completed)
-  return todos.value
-})
-
-const addTodo = (title: string) => {
-  todos.value.push({
-    id: Date.now().toString(),
-    title,
-    completed: false
-  })
-}
-
-const removeTodo = (id: string) => {
-  todos.value = todos.value.filter(t => t.id !== id)
-}
-
-const toggleTodo = (id: string) => {
-  const todo = todos.value.find(t => t.id === id)
-  if (todo) todo.completed = !todo.completed
-}
+onMounted(() => {
+  fetchTodos();
+});
 </script>
 
-
 <template>
-  <div class="max-w-md mx-auto p-4">
-    <h1 class="text-xl font-bold mb-4">📝 To-Do List</h1>
+  <div class="p-4 max-w-xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">To-Do List</h1>
 
     <TodoInput @submit="addTodo" />
 
-    <FilterTabs v-model="filter" />
+    <FilterTabs :modelValue="filter" @update:modelValue="filter = $event" />
 
-    <ul>
+    <div v-if="error" class="text-red-500 text-center my-4">
+      <p>{{ error }}</p>
+    </div>
+
+    <div v-if="loading" class="text-center my-4">
+      <p>Loading...</p>
+    </div>
+
+    <div class="space-y-2">
       <TodoItem
         v-for="todo in filteredTodos"
         :key="todo.id"
@@ -54,6 +44,17 @@ const toggleTodo = (id: string) => {
         @toggle="toggleTodo"
         @remove="removeTodo"
       />
-    </ul>
+      <p v-if="!filteredTodos.length" class="text-center text-gray-500">
+        No tasks found.
+      </p>
+    </div>
   </div>
 </template>
+
+<style scoped>
+@media (max-width: 768px) {
+  .p-4 {
+    padding: 1rem;
+  }
+}
+</style>
