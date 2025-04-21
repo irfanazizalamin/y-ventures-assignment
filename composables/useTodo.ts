@@ -6,7 +6,7 @@ export const useTodo = () => {
   const filter = ref<Filter>("all");
   const loading = ref(false);
   const error = ref("");
-
+  const userId = ref<number | null>(null);
   const isOnline = ref(true);
 
   const checkOnlineStatus = () => {
@@ -19,12 +19,15 @@ export const useTodo = () => {
 
     if (isOnline.value) {
       try {
-        const res = await $fetch<Todo[]>(
-          "https://jsonplaceholder.typicode.com/posts"
-        );
+        let url = "https://jsonplaceholder.typicode.com/posts";
+        if (userId.value !== null) {
+          url += `?userId=${userId.value}`;
+        }
+
+        const res = await $fetch<Todo[]>(url);
         todos.value = res.map((post) => ({
+          ...post,
           id: post.id.toString(),
-          title: post.title,
           completed: false,
           createdAt: Date.now(),
         }));
@@ -50,12 +53,15 @@ export const useTodo = () => {
   const addTodo = async (title: string) => {
     const newTodo: Todo = {
       id: crypto.randomUUID(),
+      userId: 11,
       title,
+      body: title,
       completed: false,
       createdAt: Date.now(),
     };
+
     todos.value.push(newTodo);
-    todos.value.sort((a, b) => b.createdAt - a.createdAt); // Sort todos by creation date
+    todos.value.sort((a, b) => b.createdAt - a.createdAt);
     localStorage.setItem("todos", JSON.stringify(todos.value));
 
     if (isOnline.value) {
@@ -65,7 +71,7 @@ export const useTodo = () => {
           body: JSON.stringify({
             title: newTodo.title,
             body: newTodo.title,
-            userId: 1,
+            userId: newTodo.userId,
           }),
         });
       } catch (e) {
@@ -95,11 +101,7 @@ export const useTodo = () => {
     );
   });
 
-  onMounted(() => {
-    fetchTodos();
-    window.addEventListener("online", checkOnlineStatus);
-    window.addEventListener("offline", checkOnlineStatus);
-  });
+  watch(userId, fetchTodos);
 
   return {
     todos,
@@ -111,5 +113,7 @@ export const useTodo = () => {
     fetchTodos,
     loading,
     error,
+    userId,
+    checkOnlineStatus,
   };
 };

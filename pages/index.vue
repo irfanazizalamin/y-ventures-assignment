@@ -1,9 +1,4 @@
 <script setup lang="ts">
-import TodoInput from "@/components/TodoInput.vue";
-import TodoItem from "@/components/TodoItem.vue";
-import FilterTabs from "@/components/FilterTabs.vue";
-import { useTodo } from "@/composables/useTodo";
-
 const {
   filteredTodos,
   addTodo,
@@ -13,18 +8,24 @@ const {
   fetchTodos,
   loading,
   error,
+  userId,
+  checkOnlineStatus,
 } = useTodo();
 
 onMounted(() => {
   fetchTodos();
+  window.addEventListener("online", checkOnlineStatus);
+  window.addEventListener("offline", checkOnlineStatus);
 });
 </script>
 
 <template>
-  <div class="p-4 max-w-xl mx-auto">
+  <div class="p-4 max-w-2xl mx-auto">
     <h1 class="text-2xl font-bold mb-4">To-Do List</h1>
 
     <TodoInput @submit="addTodo" />
+
+    <FilterUser v-model="userId" />
 
     <FilterTabs :modelValue="filter" @update:modelValue="filter = $event" />
 
@@ -32,11 +33,11 @@ onMounted(() => {
       <p>{{ error }}</p>
     </div>
 
-    <div v-if="loading" class="text-center my-4">
+    <div v-else-if="loading" class="text-center my-4">
       <p>Loading...</p>
     </div>
 
-    <div class="space-y-2">
+    <div v-else class="space-y-2">
       <TodoItem
         v-for="todo in filteredTodos"
         :key="todo.id"

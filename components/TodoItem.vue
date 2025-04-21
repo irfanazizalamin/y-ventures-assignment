@@ -12,16 +12,29 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <li class="flex items-center justify-between mb-2">
-    <label class="flex items-center gap-2">
+  <li
+    class="flex items-center border rounded shadow-sm p-3 justify-between mb-2"
+  >
+    <label class="flex items-center gap-3">
       <input
         type="checkbox"
         :checked="todo.completed"
         @change="emit('toggle', todo.id)"
       />
-      <span :class="{ 'line-through text-gray-400': todo.completed }">{{
-        todo.title
-      }}</span>
+      <div class="mb-2">
+        <h2
+          class="font-semibold"
+          :class="{ 'line-through text-gray-400': todo.completed }"
+        >
+          {{ todo.title }}
+        </h2>
+        <p
+          class="text-sm text-gray-700"
+          :class="{ 'line-through text-gray-400': todo.completed }"
+        >
+          {{ todo.body }}
+        </p>
+      </div>
     </label>
     <button
       class="text-red-500 hover:text-red-700"
