@@ -50,12 +50,12 @@ export const useTodo = () => {
     }
   };
 
-  const addTodo = async (title: string) => {
+  const addTodo = async (title: string, body: string) => {
     const newTodo: Todo = {
       id: crypto.randomUUID(),
       userId: 11,
       title,
-      body: title,
+      body,
       completed: false,
       createdAt: Date.now(),
     };
