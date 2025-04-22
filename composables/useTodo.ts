@@ -101,6 +101,12 @@ export const useTodo = () => {
     );
   });
 
+  const userIds = computed(() => {
+    return [...new Set(todos.value.map((todo: Todo) => todo.userId))].sort(
+      (a, b) => Number(a) - Number(b)
+    );
+  });
+
   watch(userId, fetchTodos);
 
   return {
@@ -114,6 +120,7 @@ export const useTodo = () => {
     loading,
     error,
     userId,
+    userIds,
     checkOnlineStatus,
   };
 };

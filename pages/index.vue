@@ -9,6 +9,7 @@ const {
   loading,
   error,
   userId,
+  userIds,
   checkOnlineStatus,
 } = useTodo();
 
@@ -23,7 +24,7 @@ onMounted(() => {
   <div class="p-4 max-w-2xl mx-auto">
     <TodoInput @submit="addTodo" />
 
-    <FilterUser v-model="userId" />
+    <FilterUser v-model="userId" :userIds="userIds" />
 
     <FilterTabs :modelValue="filter" @update:modelValue="filter = $event" />
 

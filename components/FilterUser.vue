@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   modelValue: number | null;
+  userIds: number[] | string[];
 }>();
 
 const emit = defineEmits<{
@@ -23,7 +24,13 @@ function onChange(event: Event) {
       @change="onChange"
     >
       <option value="null">All Users</option>
-      <option v-for="id in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]" :key="id" :value="id">User {{ id }}</option>
+      <option
+        v-for="id in userIds"
+        :key="id"
+        :value="id"
+      >
+        User {{ id }}
+      </option>
     </select>
   </div>
 </template>

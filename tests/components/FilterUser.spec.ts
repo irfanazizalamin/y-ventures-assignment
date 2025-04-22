@@ -7,6 +7,7 @@ describe("FilterUser.vue", () => {
     const wrapper = mount(FilterUser, {
       props: {
         modelValue: null,
+        userIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       },
     });
 
@@ -22,6 +23,7 @@ describe("FilterUser.vue", () => {
     const wrapper = mount(FilterUser, {
       props: {
         modelValue: null,
+        userIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       },
     });
 
@@ -41,6 +43,7 @@ describe("FilterUser.vue", () => {
     const wrapper = mount(FilterUser, {
       props: {
         modelValue: 5,
+        userIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       },
     });
 
